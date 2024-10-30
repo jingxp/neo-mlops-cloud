@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-# jobs:
+jobs:
 #   terraform:
 #     name: Set Up Infrastructure
 #     runs-on: ubuntu-latest
