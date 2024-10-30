@@ -1,0 +1,24 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY app.py .
+
+# Set environment variables (these will be overridden in Kubernetes secrets or configs)
+ENV AWS_ACCESS_KEY_ID=<your-access-key-id>
+ENV AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
+ENV S3_BUCKET_NAME=<your-s3-bucket-name>
+
+# Expose port 5000 for the Flask app
+EXPOSE 5000
+
+# Run the Flask app
+CMD ["python", "app.py"]
+CMD ["python", "data_ingestion.py"]
