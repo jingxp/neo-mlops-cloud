@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'data_ingestion/**'
+      - '.github/workflows/data_ingestion_ci_cd.yml'
     branches:
       - main
       - feature/data
@@ -17,7 +18,7 @@ jobs:
 
     env:
       IMAGE_NAME: neo-data-image   # Replace with your Docker image name
-      REGISTRY: docker.io           # Docker Hub registry
+      REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub registry
 
     steps:
       - name: Checkout code
