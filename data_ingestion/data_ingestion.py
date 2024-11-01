@@ -27,7 +27,7 @@ def fetch_and_save_data():
         #     Body=str(data),
         #     ContentType='application/json'
         # )
-        # print("Data successfully saved to S3.")
+        print("Data successfully saved to S3.")
     else:
         print("Failed to fetch data from NASA API.")
 
