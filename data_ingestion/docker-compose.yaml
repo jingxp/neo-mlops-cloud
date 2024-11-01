@@ -1,0 +1,31 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: dockerfile
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      S3_BUCKET_NAME: nasa-neo-data
+    ports:
+      - "5001:5000"
+    depends_on:
+      localstack:
+        condition: service_healthy
+    command: python data_ingestion.py
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"  # The edge port used by LocalStack
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack-s3-init:/etc/localstack/init/ready.d # Mount the init scripts directory
+    healthcheck:
+      test: ["CMD", "awslocal", "s3api", "head-bucket", "--bucket", "nasa-neo-data"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

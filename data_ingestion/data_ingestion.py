@@ -5,28 +5,28 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# Initialize AWS S3 client
-# s3 = boto3.client(
-#     's3',
-#     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-#     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-#     region_name=os.getenv("AWS_REGION")
-# )
+#Initialize AWS S3 client
+s3 = boto3.client(
+    's3',
+    endpoint_url='http://localstack:4566',
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+)
 
 NASA_API_URL = "https://ssd-api.jpl.nasa.gov/cad.api"
-# S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 def fetch_and_save_data():
     """Fetch data from NASA API and save it to S3."""
     response = requests.get(NASA_API_URL)
     if response.status_code == 200:
         data = response.json()
-        # s3.put_object(
-        #     Bucket=S3_BUCKET_NAME,
-        #     Key="cad_data.json",
-        #     Body=str(data),
-        #     ContentType='application/json'
-        # )
+        s3.put_object(
+            Bucket=S3_BUCKET_NAME,
+            Key="cad_data.json",
+            Body=str(data),
+            ContentType='application/json'
+        )
         print("Data successfully saved to S3.")
     else:
         print("Failed to fetch data from NASA API.")
