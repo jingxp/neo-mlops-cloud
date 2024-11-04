@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
+# caputure the env var
+ARG S3_BUCKET_NAME
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
 # Set the working directory
 WORKDIR /app
 
@@ -12,9 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY data_ingestion.py .
 
 # Set environment variables (these will be overridden in Kubernetes secrets or configs)
-# ENV AWS_ACCESS_KEY_ID=<your-access-key-id>
-# ENV AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
-# ENV S3_BUCKET_NAME=<your-s3-bucket-name>
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+ENV S3_BUCKET_NAME=$S3_BUCKET_NAME
 
 # Expose port 5000 for the Flask app
 EXPOSE 5000
