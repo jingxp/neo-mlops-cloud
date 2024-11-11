@@ -3,7 +3,8 @@ name: Terraform Workflow
 on:
   push:
     paths:
-      - - 'terraform/**'
+      - 'terraform/**'
+      - '.github/workflows/terraform_ci_cd.yml'
     branches:
       - main
       - feature/terraform
@@ -37,7 +38,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.2.5
+          terraform_version: 1.9.0
 
       - name: Terraform fmt
         id: fmt
@@ -66,7 +67,7 @@ jobs:
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.MY_GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
