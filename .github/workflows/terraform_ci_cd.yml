@@ -17,6 +17,7 @@ permissions:
 env:
   TF_LOG: INFO
   AWS_REGION: eu-west-3
+  AWS_TFSTATES_S3_NAME: neo-githubcicd-terraform-tfstates
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +48,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config="bucket=${{ secrets.AWS_TFSTATES_S3_NAME }}" -backend-config="key=${{ secrets.AWS_TFSTATE_S3_KEY_NAME }}" -backend-config="region=${AWS_REGION}"
+        run: terraform init -backend-config="bucket=${{ env.AWS_TFSTATES_S3_NAME }}" -backend-config="key=${{ secrets.AWS_TFSTATE_S3_KEY_NAME }}" -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
         id: validate
