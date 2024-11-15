@@ -13,5 +13,5 @@ module "s3_bucket" {
 }
 
 output "bucket_name" {
-  value = aws_s3_bucket.nasa_data_bucket.id
+  value = module.s3_bucket.s3_bucket_id
 }
