@@ -12,7 +12,7 @@ on:
 jobs:
   build-and-push:
     name: Build and Push Docker Image
-    needs: terraform
+    needs: Terraform Workflow
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: neo-data-image   # Replace with your Docker image name
