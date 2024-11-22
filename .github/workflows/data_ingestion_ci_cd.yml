@@ -1,23 +1,23 @@
 name: Data Ingestion CI/CD
 
 on:
-  push:
-    paths:
-      - 'data_ingestion/**'
-      - '.github/workflows/data_ingestion_ci_cd.yml'
-    branches:
-      - main
-      - feature/data
+  # push:
+  #   paths:
+  #     - 'data_ingestion/**'
+  #     - '.github/workflows/data_ingestion_ci_cd.yml'
+  #   branches:
+  #     - main
+  #     - feature/data
+  workflow_dispatch: # Enables manual triggering
 
 jobs:
   build-and-push:
     name: Build and Push Docker Image
-    needs: Terraform Workflow
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: neo-data-image   # Replace with your Docker image name
       REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub registry
-      S3_BUCKET_NAME: nasa_data_bucket
+      S3_BUCKET_NAME: nasa-data-bucket
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -69,8 +69,9 @@ jobs:
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_WORKFLOW_ROLE }}
           aws-region: eu-west-3  # specify your AWS region
 
       - name: Set up Kubernetes
@@ -83,10 +84,10 @@ jobs:
         run: |
           kubectl apply -f k8s/data_ingestion_deployment.yaml
           
-      - name: Expose service
+      - name: Wait for LoadBalancer
         run: |
-          kubectl expose deployment data-ingestion-deployment --type=LoadBalancer --name=data-ingestion-service
-          
+          kubectl wait --for=condition=available --timeout=300s service/nasa-data-ingestion-service
+
       - name: Get LoadBalancer URL
         run: |
-          kubectl get svc data-ingestion-service
+          kubectl get svc data-ingestion-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'

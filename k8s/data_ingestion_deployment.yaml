@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nasa-data-ingestion
-          image: your-dockerhub-username/nasa-data-ingestion:latest
+          image: xuepingjing/neo-data-image:latest
           ports:
           - containerPort: 5000
           env:
@@ -45,4 +45,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5000
-  type: ClusterIP
+  type: LoadBalancer

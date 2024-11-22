@@ -1,14 +1,15 @@
 name: Terraform Workflow
 
 on:
-  push:
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform_ci_cd.yml'
-    branches:
-      - main
-      - feature/terraform
-  pull_request:
+  # push:
+  #   paths:
+  #     - 'terraform/**'
+  #     - '.github/workflows/terraform_ci_cd.yml'
+  #   branches:
+  #     - main
+  #     - feature/terraform
+  # pull_request:
+  workflow_dispatch: # Enables manual triggering
 permissions:
       id-token: write # This is required for aws oidc connection
       contents: read # This is required for actions/checkout
